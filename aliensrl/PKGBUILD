@@ -1,13 +1,13 @@
 # Maintainer: Daniel Bonkowski <bonkowski.daniel@gmail.com>
 pkgname=aliensrl
 pkgver=0.8.2
-pkgrel=1
+pkgrel=2
 pkgdesc='A tactical roguelike game, inspired by the "Aliens" movie and the "Alien Breed: Tower Assault" computer game'
 arch=('x86_64')
 url="http://alien.chaosforge.org"
-license=()
-depends=('libx11' 'zlib')
-backup=("opt/${pkgname}/config.lua")
+license=('unknown')
+depends=('libx11' 'zlib' 'sh')
+backup=("opt/${pkgname}/config.lua" "opt/${pkgname}/log.txt" "opt/${pkgname}/mortem.txt")
 _stripped_version=$(echo $pkgver|tr -d '.')
 source=("http://alien.chaosforge.org/file_download/7/${pkgname}-linux-x64-${_stripped_version}.tar.gz")
 md5sums=('6eccd6822e79d775d2c0eb62dfe40809')
@@ -20,7 +20,11 @@ package() {
     cd /opt/aliensrl
     ./abrl" > "${pkgdir}/usr/bin/${pkgname}"
     chmod 755 "${pkgdir}/usr/bin/${pkgname}"
-    #logfile has to be writable by everyone
-    touch "${pkgdir}/opt/${pkgname}/log.txt"
-    chmod 666 "${pkgdir}/opt/${pkgname}/log.txt"
+    #files that have to be writable by everyone
+    for filename in log.txt mortem.txt
+    do
+        touch "${pkgdir}/opt/${pkgname}/${filename}"
+        chmod 664 "${pkgdir}/opt/${pkgname}/${filename}"
+        chown :users "${pkgdir}/opt/${pkgname}/${filename}"
+    done
 }
