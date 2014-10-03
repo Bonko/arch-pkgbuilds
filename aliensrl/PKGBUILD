@@ -1,0 +1,26 @@
+# Maintainer: Daniel Bonkowski <bonkowski.daniel@gmail.com>
+pkgname=aliensrl
+pkgver=0.8.2
+pkgrel=1
+pkgdesc='A tactical roguelike game, inspired by the "Aliens" movie and the "Alien Breed: Tower Assault" computer game'
+arch=('x86_64')
+url="http://alien.chaosforge.org"
+license=()
+depends=('libx11' 'zlib')
+backup=("opt/${pkgname}/config.lua")
+_stripped_version=$(echo $pkgver|tr -d '.')
+source=("http://alien.chaosforge.org/file_download/7/${pkgname}-linux-x64-${_stripped_version}.tar.gz")
+md5sums=('6eccd6822e79d775d2c0eb62dfe40809')
+
+package() {
+	install -d "${pkgdir}/opt/${pkgname}"
+    cp -R ${srcdir}/aliensrl-linux-x64-${_stripped_version}/* ${pkgdir}/opt/${pkgname}
+	install -d "${pkgdir}/usr/bin"
+    echo "#!/bin/sh
+    cd /opt/aliensrl
+    ./abrl" > "${pkgdir}/usr/bin/${pkgname}"
+    chmod 755 "${pkgdir}/usr/bin/${pkgname}"
+    #logfile has to be writable by everyone
+    touch "${pkgdir}/opt/${pkgname}/log.txt"
+    chmod 666 "${pkgdir}/opt/${pkgname}/log.txt"
+}
